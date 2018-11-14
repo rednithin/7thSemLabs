@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>First vowel and Reverse a Number</title>
+    <script>
+      function compute() {
+        let value = document.getElementById("input").value;
+        value = value.toLowerCase();
+        if (isNaN(value)) {
+          for (let i = 0; i < value.length; i++) {
+            if (["a", "e", "i", "o", "u"].indexOf(value[i]) != -1) {
+              document.getElementById("answer").innerHTML = `Found at ${i +
+                1} vowel ${value[i]}`;
+            }
+          }
+        } else {
+          value = value.split("").reduce((prev, elem) => elem + prev, "");
+          document.getElementById("answer").innerHTML = value;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <input type="text" id="input" /> <button onclick="compute()">Submit</button>
+    <div id="answer"></div>
+  </body>
+</html>

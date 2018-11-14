@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>Squares and Cubes</title>
+    <script>
+      function calulateTable() {
+        let answer =
+          "<table><tr><th>Number</th><th>Squares</th><th>Cubes</th></tr>";
+        for (let i = 1; i <= 10; i++) {
+          answer += `<tr><td>${i}</td><td>${i * i}</td><td>${i ** 3}</td></tr>`;
+        }
+        answer += "</table>";
+        document.getElementById("table").innerHTML = answer;
+      }
+    </script>
+  </head>
+  <body onload="calulateTable()">
+    <div id="table"></div>
+  </body>
+</html>

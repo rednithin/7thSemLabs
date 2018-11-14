@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <title>Text Growing and Shrinking</title>
+    <script>
+      let reference = null;
+      let textSize = 5;
+
+      function textShrinking() {
+        console.log(textSize);
+        let answer = `<p style="font-size: ${textSize}; color: blue;">TEXT SHRINKING</p>`;
+        textSize -= 5;
+        document.getElementById("answer").innerHTML = answer;
+        if (textSize < 5) {
+          clearInterval(reference);
+          textSize += 5;
+          reference = setInterval(textGrowing, 500);
+        }
+      }
+
+      var textGrowing = () => {
+        console.log(textSize);
+        let answer = `<p style="font-size: ${textSize}; color: red;">TEXT GROWING</p>`;
+        textSize += 5;
+        document.getElementById("answer").innerHTML = answer;
+        if (textSize > 50) {
+          clearInterval(reference);
+          textSize -= 5;
+          reference = setInterval(textShrinking, 500);
+        }
+      };
+
+      function init() {
+        reference = setInterval(textGrowing, 500);
+      }
+    </script>
+  </head>
+  <body onload="init()">
+    <div id="answer"></div>
+  </body>
+</html>

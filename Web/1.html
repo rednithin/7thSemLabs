@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>Simple Calculator</title>
+    <script>
+      function calculate() {
+        let expression = document.getElementById("expression");
+        let answer = document.getElementById("answer");
+
+        answer.innerHTML = eval(expression.value);
+      }
+    </script>
+  </head>
+  <body>
+    <input type="text" id="expression" />
+    <button onclick="calculate()">Calculate</button>
+    <p id="answer"></p>
+  </body>
+</html>

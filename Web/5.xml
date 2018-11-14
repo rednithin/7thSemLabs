@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="5.css"?>
+<students>
+  <student>
+    <name>Nithin</name>
+    <usn>1</usn>
+  </student>
+  <student>
+    <name>Reddy</name>
+    <usn>2</usn>
+  </student>
+  <student>
+    <name>P G</name>
+    <usn>3</usn>
+  </student>
+</students>
