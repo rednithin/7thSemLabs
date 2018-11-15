@@ -7,7 +7,7 @@
 
       function textShrinking() {
         console.log(textSize);
-        let answer = `<p style="font-size: ${textSize}; color: blue;">TEXT SHRINKING</p>`;
+        let answer = `<p style="font-size: ${textSize}; color: blue;">TEXT SHRINKING Size:${textSize}pt</p>`;
         textSize -= 5;
         document.getElementById("answer").innerHTML = answer;
         if (textSize < 5) {
@@ -19,7 +19,7 @@
 
       var textGrowing = () => {
         console.log(textSize);
-        let answer = `<p style="font-size: ${textSize}; color: red;">TEXT GROWING</p>`;
+        let answer = `<p style="font-size: ${textSize}; color: red;">TEXT GROWING Size:${textSize}pt</p>`;
         textSize += 5;
         document.getElementById("answer").innerHTML = answer;
         if (textSize > 50) {
