@@ -5,7 +5,8 @@ from pgmpy.estimators import MaximumLikelihoodEstimator
 from pgmpy.models import BayesianModel
 from pgmpy.inference import VariableElimination
 
-heartDisease = pd.read_csv('7-dataset.csv')
+heartDisease = pd.read_csv('7-dataset.csv', names=['age', 'sex', 'cp', 'trestbps', 'chol',
+                                                   'fbs', 'restecg', 'thalach', 'exang', 'oldspeak', 'slope', 'ca', 'thal', 'heartdisease'])
 heartDisease = heartDisease.replace("?", np.nan)
 
 print(heartDisease.head())
@@ -24,5 +25,5 @@ print(q["heartdisease"])
 
 print("2. Probability Of Heart Disease Given Chol (cholestrol) = 100")
 q = HeartDisease_infer.query(
-    variables=['heartdisease'], evidence={'chol': 100})
+    variables=['heartdisease'], evidence={'chol': 25})
 print(q['heartdisease'])
