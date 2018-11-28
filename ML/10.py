@@ -1,18 +1,65 @@
-from sklearn.neighbors import KNeighborsRegressor
-import numpy as np
-import math
+
 import pylab as pl
+from math import pi, ceil
+import numpy as np
+
+
+def lowess(x, y, f=2. / 3., iter=3):
+    n = len(x)
+    r = int(ceil(f * n))
+    h = [np.sort(np.abs(x - x[i]))[r] for i in range(n)]
+
+    w = np.clip(np.abs((x[:, None] - x[None, :]) / h), 0.0, 1.0)
+    w = (1 - w ** 3) ** 3
+
+    yest = np.zeros(n)
+    delta = np.ones(n)
+    for _ in range(iter):
+        for i in range(n):
+            weights = delta * w[:, i]
+            b = np.array([np.sum(weights * y), np.sum(weights * y * x)])
+            A = np.array([[np.sum(weights), np.sum(weights * x)],
+                          [np.sum(weights * x), np.sum(weights * x * x)]])
+            beta = np.linalg.solve(A, b)
+            yest[i] = beta[0] + beta[1] * x[i]
+
+        residuals = y - yest
+        s = np.median(np.abs(residuals))
+        delta = np.clip(residuals / (6.0 * s), -1, 1)
+        delta = (1 - delta ** 2) ** 2
+
+    return yest
+
 
 n = 100
-x = np.linspace(0, 2 * math.pi, n)
+x = np.linspace(0, 2 * pi, n)
 y = np.sin(x) + 0.3 * np.random.randn(n)
 
-neigh = KNeighborsRegressor(n_neighbors=20)
-neigh.fit(x.reshape(-1, 1), y.reshape(-1, 1))
-newY = neigh.predict(x.reshape(-1, 1))
+f = 0.25
+yest = lowess(x, y, f=f, iter=3)
 
 pl.clf()
-pl.plot(x, y, label='Noisy')
-pl.plot(x, newY, label='Prediction')
-pl.legend(loc='upper right')
+pl.plot(x, y, label='y noisy')
+pl.plot(x, yest, label='y pred')
+pl.legend()
 pl.show()
+
+
+# from sklearn.neighbors import KNeighborsRegressor
+# import numpy as np
+# import math
+# import pylab as pl
+
+# n = 100
+# x = np.linspace(0, 2 * math.pi, n)
+# y = np.sin(x) + 0.3 * np.random.randn(n)
+
+# neigh = KNeighborsRegressor(n_neighbors=20)
+# neigh.fit(x.reshape(-1, 1), y.reshape(-1, 1))
+# newY = neigh.predict(x.reshape(-1, 1))
+
+# pl.clf()
+# pl.plot(x, y, label='Noisy')
+# pl.plot(x, newY, label='Prediction')
+# pl.legend(loc='upper right')
+# pl.show()

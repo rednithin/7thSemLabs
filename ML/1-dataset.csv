@@ -1,4 +1,4 @@
-sunny,warm,normal,strong,warm,same,yes
-sunny,warm,high,strong,warm,same,yes
-sunny,warm,high,strong,cool,change,yes
-sunny,warm,high,strong,cool,change,no
+Sunny,Warm,Normal,Strong,Warm,Same,Yes
+Sunny,Warm,High,Strong,Warm,Same,Yes
+Cloudy,Cold,High,Strong,Warm,Change,No
+Sunny,Warm,High,Strong,Cool,Change,Yes
