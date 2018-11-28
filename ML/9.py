@@ -4,19 +4,14 @@ from csv import reader
 from collections import Counter
 
 with open('9-dataset.csv') as f:
-    attrs = []
-    targets = []
-    dataset = list(reader(f))
+    dataset = np.array(list(reader(f)))
     shuffle(dataset)
-    for row in dataset:
-        attrs.append(row[:-1])
-        targets.append(row[-1])
 
 trainLen = int(0.8 * len(dataset))
 trainDataset, trainTarget = np.array(
-    attrs[:trainLen], dtype='float'), targets[:trainLen]
+    dataset[:trainLen, :-1], dtype='float'), dataset[:trainLen, -1]
 testDataset, testTarget = np.array(
-    attrs[trainLen:], dtype='float'), targets[trainLen:]
+    dataset[trainLen:, :-1], dtype='float'), dataset[trainLen:, -1]
 
 predicted = []
 k = 5
