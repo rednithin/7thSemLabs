@@ -1,50 +1,50 @@
-import csv
+from csv import reader
+from pprint import pprint
+from random import shuffle, seed
+from math import exp, pi, sqrt
+from operator import itemgetter
 import numpy as np
-from random import shuffle
-import math
+
+seed(2)
+data = np.array(list(reader(open('5-dataset-alt.csv'))), dtype='float')
+shuffle(data)
+trainLen = int(.9 * len(data))
+trainData, trainTarget = data[:trainLen, : -1], data[:trainLen, -1]
+testData, testTarget = data[trainLen:, : -1], data[trainLen:, -1]
 
 
 def safe_div(x, y):
-    if y == 0:
-        return 0
-    return x / y
+    return x / y if y != 0 else 0
 
 
-def get_probability(x, mean, stddev):
-    exponent = math.exp(-safe_div((x - mean) ** 2, 2 * (stddev ** 2)))
-    final = safe_div(1, math.sqrt(2 * math.pi) * stddev) * exponent
-    return final
+def getProbabilty(x, mean, std):
+    exponent = exp(-safe_div((x - mean) ** 2, 2 * std ** 2))
+    return safe_div(1, sqrt(2 * pi) * std) * exponent
 
-
-data = np.array(list(csv.reader(open('5-dataset.csv'))), dtype='float')
-shuffle(data)
-
-train_length = int(0.9 * len(data))
-train_data, train_target = data[:train_length, : -1], data[:train_length, -1]
-test_data, test_target = data[train_length:, : -1], data[train_length:, -1]
 
 classes = {}
-for i, j in zip(train_data, train_target):
-    if j not in classes:
-        classes[j] = [i]
-    else:
-        classes[j].append(i)
+for attrs, target in zip(trainData, trainTarget):
+    if target not in classes:
+        classes[target] = []
+    classes[target].append(attrs)
 
 summaries = {}
-for i in classes:
-    summaries[i] = []
-    for j in zip(*classes[i]):
-        summaries[i].append((np.mean(j), np.std(j)))
+for cls in classes.keys():
+    summaries[cls] = []
+    for val in zip(*classes[cls]):
+        summaries[cls].append((np.mean(val), np.std(val)))
 
 correct = 0
-for j, k in zip(test_data, test_target):
-    probabilities = {}
-    for classValue, classSummaries in summaries.items():
-        probabilities[classValue] = 1
-        for i in range(len(classSummaries)):
-            mean, stddev = classSummaries[i]
-            x = j[i]
-            probabilities[classValue] *= get_probability(x, mean, stddev)
-    print(probabilities, k)
+for attrs, target in zip(testData, testTarget):
+    probabilty = {}
+    for cls in classes.keys():
+        probabilty[cls] = 1
+        for i, (mean, std) in enumerate(summaries[cls]):
+            probabilty[cls] *= getProbabilty(attrs[i], mean, std)
 
-print((correct / len(test_data)) * 100)
+    cls = sorted(probabilty.items(), key=itemgetter(1), reverse=True)[0][0]
+    print(cls, target)
+    if cls == target:
+        correct += 1
+
+print(f'Accuracy {correct/len(testData)}')
