@@ -4,8 +4,11 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from pprint import pprint
 
-train = fetch_20newsgroups(subset='train')
-test = fetch_20newsgroups(subset='test')
+categories = ['alt.atheism', 'soc.religion.christian',
+              'comp.graphics', 'sci.med']
+
+train = fetch_20newsgroups(subset='train', categories=categories)
+test = fetch_20newsgroups(subset='test', categories=categories)
 
 c, t = CountVectorizer(), TfidfTransformer()
 
