@@ -1,4 +1,6 @@
 
+import math
+from sklearn.neighbors import KNeighborsRegressor
 import pylab as pl
 from math import pi, ceil
 import numpy as np
@@ -38,28 +40,18 @@ y = np.sin(x) + 0.3 * np.random.randn(n)
 f = 0.25
 yest = lowess(x, y, f=f, iter=3)
 
+'''-----------------------------------------'''
+n = 100
+x = np.linspace(0, 2 * math.pi, n)
+y = np.sin(x) + 0.3 * np.random.randn(n)
+
+neigh = KNeighborsRegressor(n_neighbors=30)
+neigh.fit(x.reshape(-1, 1), y.reshape(-1, 1))
+newY = neigh.predict(x.reshape(-1, 1))
+
 pl.clf()
-pl.plot(x, y, label='y noisy')
-pl.plot(x, yest, label='y pred')
-pl.legend()
+pl.plot(x, y, label='Noisy')
+pl.plot(x, yest, label='Lowess')
+pl.plot(x, newY, label='KNN')
+pl.legend(loc='upper right')
 pl.show()
-
-
-# from sklearn.neighbors import KNeighborsRegressor
-# import numpy as np
-# import math
-# import pylab as pl
-
-# n = 100
-# x = np.linspace(0, 2 * math.pi, n)
-# y = np.sin(x) + 0.3 * np.random.randn(n)
-
-# neigh = KNeighborsRegressor(n_neighbors=20)
-# neigh.fit(x.reshape(-1, 1), y.reshape(-1, 1))
-# newY = neigh.predict(x.reshape(-1, 1))
-
-# pl.clf()
-# pl.plot(x, y, label='Noisy')
-# pl.plot(x, newY, label='Prediction')
-# pl.legend(loc='upper right')
-# pl.show()
