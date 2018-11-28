@@ -4,8 +4,6 @@ from sklearn.datasets import load_iris
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 
-
-plt.figure(figsize=(14, 14)).subplots_adjust(hspace=0.4, wspace=0.4)
 colormap = np.array(['red', 'lime', 'black'])
 
 iris = load_iris()
@@ -14,10 +12,10 @@ X, Y = iris.data, iris.target
 
 def plot(i, title, targets):
     plt.subplot(2, 2, i)
-    plt.scatter(X[:, 2], X[:, 3], c=colormap[targets])
     plt.title(title)
-    plt.xlabel('Petal_Length')
-    plt.ylabel('Petal_Width')
+    plt.scatter(X[:, 2], X[:, 3], c=colormap[targets])
+    plt.xlabel('Petal Length')
+    plt.ylabel('Petal Width')
 
 
 kmeans = KMeans(n_clusters=3)
