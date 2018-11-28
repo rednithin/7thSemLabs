@@ -13,8 +13,6 @@ with open('9-dataset.csv') as f:
         targets.append(row[-1])
 
 trainLen = int(0.8 * len(dataset))
-dataset = np.array(dataset)
-
 trainDataset, trainTarget = np.array(
     attrs[:trainLen], dtype='float'), targets[:trainLen]
 testDataset, testTarget = np.array(
