@@ -1,29 +1,27 @@
+from bayespy.nodes import Dirichlet, Categorical, MultiMixture
 import numpy as np
-import pandas as pd
-import csv
-from pgmpy.estimators import MaximumLikelihoodEstimator
-from pgmpy.models import BayesianModel
-from pgmpy.inference import VariableElimination
+from csv import reader
 
-heartDisease = pd.read_csv('7-dataset.csv', names=['age', 'sex', 'cp', 'trestbps', 'chol',
-                                                   'fbs', 'restecg', 'thalach', 'exang', 'oldspeak', 'slope', 'ca', 'thal', 'heartdisease'])
-heartDisease = heartDisease.replace("?", np.nan)
+enum = [{'SSC': 0, 'S': 1, 'M': 2, 'Y': 3, 'T': 4}, {'M': 0, 'F': 1}, {'Y': 0, 'N': 1}, {'H': 0, 'M': 1, 'L': 2}, {
+        'Athlete': 0, 'Active': 1, 'Moderate': 2, 'Sedetary': 3}, {'H': 0, 'B': 1, 'N': 2}, {'Y': 0, 'N': 1}]
 
-print(heartDisease.head())
+data = np.array([[enum[i][j]
+                  for i, j in enumerate(k)] for k in reader(open('7-dataset.csv'))])
 
-model = BayesianModel([('age', 'trestbps'), ('age', 'fbs'), ('sex', 'trestbps'), ('exang', 'trestbps'), ('trestbps', 'heartdisease'),
-                       ('fbs', 'heartdisease'), ('heartdisease',
-                                                 'restecg'), ('heartdisease', 'thalach'),
-                       ('heartdisease', 'chol')])
+n = len(data)
 
-model.fit(heartDisease, estimator=MaximumLikelihoodEstimator)
-HeartDisease_infer = VariableElimination(model)
+categoricals = []
+for i in range(len(enum)-1):
+    dirichlet = Dirichlet(np.ones(len(enum[i])))
+    categoricals.append(Categorical(dirichlet, plates=(n,)))
+    categoricals[i].observe(data[:, i])
 
-print("1. Probability Of Heart Disease Given Age = 28")
-q = HeartDisease_infer.query(variables=['heartdisease'], evidence={'age': 28})
-print(q["heartdisease"])
+target = Dirichlet(np.ones(2), plates=(5, 2, 2, 3, 4, 3))
+model = MultiMixture(categoricals, Categorical, target)
+model.observe(data[:, -1])
+target.update()
 
-print("2. Probability Of Heart Disease Given Chol (cholestrol) = 100")
-q = HeartDisease_infer.query(
-    variables=['heartdisease'], evidence={'chol': 25})
-print(q['heartdisease'])
+tup = [enum[i][j] for i, j in enumerate(input('Tuple: ').split(','))]
+
+result = MultiMixture(tup, Categorical, target).get_moments()[0][0]
+print(result)
