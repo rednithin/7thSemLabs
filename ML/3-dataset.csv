@@ -1,0 +1,14 @@
+Sunny,Hot,High,F,N
+Sunny,Hot,High,T,N
+Overcast,Hot,High,F,Y
+Rain,Mild,High,F,Y
+Rain,Cool,Normal,F,Y
+Rain,Cool,Normal,T,N
+Overcast,Cool,Normal,T,Y
+Sunny,Mild,High,F,N
+Sunny,Cool,Normal,F,Y
+Rain,Mild,Normal,F,Y
+Sunny,Mild,Normal,T,Y
+Overcast,Mild,High,T,Y
+Overcast,Hot,Normal,F,Y
+Rain,Mild,High,T,N
