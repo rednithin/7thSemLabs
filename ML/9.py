@@ -3,7 +3,7 @@ from random import shuffle, seed
 from csv import reader
 from collections import Counter
 
-seed(2)
+seed(4)
 
 with open('9-dataset.csv') as f:
     dataset = np.array(list(reader(f)))
