@@ -12,10 +12,10 @@ def nonlin(x, deriv=False):
 
 n_x, n_h, n_y, lRate = 2, 3, 1, 0.5
 
-W1 = np.random.randn(n_h, n_x) - 0.5
-b1 = np.random.randn(n_h, 1) - 0.5
-W2 = np.random.randn(n_y, n_h) - 0.5
-b2 = np.random.randn(n_y, 1) - 0.5
+W1 = np.random.randn(n_h, n_x)
+b1 = np.random.randn(n_h, 1)
+W2 = np.random.randn(n_y, n_h)
+b2 = np.random.randn(n_y, 1)
 
 dataset = [[2.7810836, 2.550537003, 0],
            [1.465489372, 2.362125076, 0],
@@ -31,7 +31,7 @@ dataset = [[2.7810836, 2.550537003, 0],
 for epoch in range(300 + 1):
     total_error = 0
     for example in dataset:
-        attrs = np.array(example[:-1]).reshape(2, 1)
+        attrs = np.array(example[:-1]).reshape(-1, 1)
         target = example[-1]
 
         l0 = attrs

@@ -31,8 +31,8 @@ for attrs, target in zip(trainData, trainTarget):
 summaries = {}
 for cls in classes.keys():
     summaries[cls] = []
-    for val in zip(*classes[cls]):
-        summaries[cls].append((np.mean(val), np.std(val)))
+    for column in zip(*classes[cls]):
+        summaries[cls].append((np.mean(column), np.std(column)))
 
 correct = 0
 for attrs, target in zip(testData, testTarget):

@@ -1,5 +1,3 @@
-
-import math
 from sklearn.neighbors import KNeighborsRegressor
 import pylab as pl
 from math import pi, ceil
@@ -41,13 +39,14 @@ f = 0.25
 yest = lowess(x, y, f=f, iter=3)
 
 '''-----------------------------------------'''
-n = 100
-x = np.linspace(0, 2 * math.pi, n)
+n = 200
+x = np.linspace(-pi, 3 * pi, n)
 y = np.sin(x) + 0.3 * np.random.randn(n)
 
 neigh = KNeighborsRegressor(n_neighbors=30)
 neigh.fit(x.reshape(-1, 1), y.reshape(-1, 1))
-newY = neigh.predict(x.reshape(-1, 1))
+newY = neigh.predict(x.reshape(-1, 1))[50:150]
+x, y = x[50:150], y[50:150]
 
 pl.clf()
 pl.plot(x, y, label='Noisy')
