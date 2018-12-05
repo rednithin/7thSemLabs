@@ -43,7 +43,7 @@ for attrs, target in zip(testData, testTarget):
             probabilty[cls] *= getProbabilty(attrs[i], mean, std)
 
     cls = sorted(probabilty.items(), key=itemgetter(1), reverse=True)[0][0]
-    print(cls, target)
+    print(f'Actual: {target} \tPredicted: {cls}')
     if cls == target:
         correct += 1
 
