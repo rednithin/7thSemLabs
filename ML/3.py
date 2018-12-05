@@ -1,15 +1,8 @@
-# from sklearn.datasets import load_iris
-# from sklearn import tree
-# iris = load_iris()
-# clf = tree.DecisionTreeClassifier()
-# clf = clf.fit(iris.data, iris.target)
-# print(clf.predict([[0, 0, 1, 1]]))
-
-
 import numpy as np
 from math import log2
 from csv import reader
 from pprint import pprint
+from collections import Counter
 
 YES = 'Y'
 NO = 'N'
@@ -64,7 +57,7 @@ def id3(data, labels):
         else:
             root.label = "No"
     elif len(data[0]) == 1:
-        return
+        root.label = Counter(data[:, -1]).most_common(n=1)[0]
     else:
         column = bestAttribute(data)
         root.label = labels[column]
@@ -85,12 +78,26 @@ def getRules(root, rule, rules):
         getRules(root.branches[i], rule + root.label + '=' + i + " ^ ", rules)
 
 
+def predict(tree, tup):
+    if not tree.branches:
+        return tree.label
+
+    return predict(tree.branches[tup[tree.label]], tup)
+
+
 labels = np.array(['Outlook', 'Temperature', 'Humidity', 'Wind', 'PlayTennis'])
 
 with open('3-dataset.csv') as f:
     data = np.array(list(reader(f)))
 
+
 tree = id3(data, labels)
 rules = []
 getRules(tree, "", rules)
-pprint(rules)
+pprint(sorted(rules))
+
+tup = {}
+for label in labels[:-1]:
+    tup[label] = input(label + " : ")
+
+pprint(predict(tree, tup))
