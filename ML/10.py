@@ -3,6 +3,8 @@ import pylab as pl
 from math import pi, ceil
 import numpy as np
 
+np.random.seed(2)
+
 
 def lowess(x, y, f=2. / 3., iter=3):
     n = len(x)
