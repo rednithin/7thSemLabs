@@ -25,6 +25,7 @@ for row in testDataset:
 
 correct = 0
 for i, target in enumerate(testTarget):
+    print(f'Actual: {target.ljust(15)} \t\tPredicted: {predicted[i]}')
     if predicted[i] == target:
         correct += 1
 

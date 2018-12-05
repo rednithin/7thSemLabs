@@ -53,6 +53,6 @@ x, y = x[50:150], y[50:150]
 pl.clf()
 pl.plot(x, y, label='Noisy')
 pl.plot(x, yest, label='Lowess')
-pl.plot(x, newY, label='KNN')
+pl.plot(x, newY, label='KNN Scikit')
 pl.legend(loc='upper right')
 pl.show()
