@@ -18,7 +18,7 @@ testDataset, testTarget = np.array(
 predicted = []
 k = 5
 for row in testDataset:
-    eds = list(map(lambda x: np.sum((row - x) ** 2), trainDataset))
+    eds = [np.sum((row - x) ** 2) for x in trainDataset]
     kNearest = np.array(sorted(zip(eds, trainTarget))[:k])[:, -1]
     labelFreq = Counter(kNearest)
     predicted.append(labelFreq.most_common(n=1)[0][0])
