@@ -4,8 +4,7 @@ from math import log2
 from collections import Counter
 from pprint import pprint
 
-YES = "Y"
-NO = "N"
+YES, NO = "Y", "N"
 
 
 class Node:
@@ -36,20 +35,12 @@ def gain(s, data, column):
 
 def bestAttribute(data):
     s = entropy(data)
-    bestGain = -float('inf')
-    bestColumn = -1
-    for column in range(len(data[0]) - 1):
-        g = gain(s, data, column)
-        if g > bestGain:
-            bestGain = g
-            bestColumn = column
-
-    return bestColumn
+    g = [gain(s, data, column) for column in range(len(data[0]) - 1)]
+    return g.index[max(g)]
 
 
 def id3(data, labels):
-    root = Node('NULL')
-
+    root = Node('Null')
     if entropy(data) == 0:
         root.label = data[0, -1]
     elif len(data[0]) == 1:
@@ -58,7 +49,6 @@ def id3(data, labels):
         column = bestAttribute(data)
         root.label = labels[column]
         values = set(data[:, column])
-
         for value in values:
             nData = np.delete(
                 data[data[:, column] == value], column, axis=1)
@@ -77,7 +67,6 @@ def getRules(root, rule, rules):
 def predict(tree, tup):
     if not tree.branches:
         return tree.label
-
     return predict(tree.branches[tup[tree.label]], tup)
 
 
@@ -85,7 +74,6 @@ labels = np.array(['Outlook', 'Temperature', 'Humidity', 'Wind', 'PlayTennis'])
 
 with open('3-dataset.csv') as f:
     data = np.array(list(reader(f)))
-
 
 tree = id3(data, labels)
 rules = []
