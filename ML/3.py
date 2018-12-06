@@ -36,7 +36,7 @@ def gain(s, data, column):
 def bestAttribute(data):
     s = entropy(data)
     g = [gain(s, data, column) for column in range(len(data[0]) - 1)]
-    return g.index[max(g)]
+    return g.index(max(g))
 
 
 def id3(data, labels):
