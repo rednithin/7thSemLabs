@@ -15,37 +15,39 @@
 		<button type="submit">Add</button>
 	</form>
 <?php
-	
-	
-	$dbhost = 'localhost';
-	$dbname='webdb';
-	$dbuser = 'root';
-	$dbpass = 'root123';
-	$sql = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
-	$sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	try {
-		if(count($_POST) != 0) {
-			$stmt = $sql->prepare("INSERT INTO STUDENT VALUES(?,?,?,?)");
-			$stmt->execute(array($_POST["name"],$_POST["usn"],$_POST["branch"],$_POST["sem"]));
+
+	function printTable($title, $rows) {
+		echo $title."<br>";
+		echo "<table><tr><th>Name</th><th>USN</th><th>Branch</th><th>Semester</th></tr>";
+		foreach($rows as $row) {
+			echo "<tr><td>$row[0]</td><td>$row[1]</td><td>$row[2]</td><td>$row[3]</td></tr>";
 		}
+		echo "</table>";
 	}
-	catch(Exception $exp) {
-		echo "Can't Insert USN Clash<br><br>";
+
+	$conn = mysqli_connect('localhost', 'root', '528751011', 'webdb');
+	if(!$conn) {
+		echo "Cant connect to db";
 	}
-	$result = $sql->query("SELECT * FROM STUDENT");
-	$rows = $result->fetchAll();
+	if(isset($_POST['name'])) {
+		$query = "INSERT INTO STUDENTS VALUES('".$_POST["name"]."','".$_POST["usn"]."','".$_POST["branch"]."','".$_POST["sem"]."')";
+		$res = mysqli_query($conn, $query);
+
+		if(!$res) {
+			echo "Can't Insert USN Clash<br><br>";
+		}
+	}	
+	$query = "SELECT * FROM STUDENTS";
+	$res = mysqli_query($conn, $query);
+	$rows = mysqli_fetch_all($res);
 	
-	echo	"Unsorted<br>";
-	echo "<table><tr><th>Name</th><th>USN</th><th>Branch</th><th>Semester</th></tr>";
-	foreach($rows as $row) {
-		echo "<tr><td>$row[0]</td><td>$row[1]</td><td>$row[2]</td><td>$row[3]</td></tr>";
-	}
-	echo "</table>";
+
+	printTable("Unsorted", $rows);
 
 	for($i = 0; $i < count($rows) - 1; $i++) {
 		$minIndex = $i;
 		for($j = $i+1; $j < count($rows); $j++) {
-			if(strcmp($rows[$j]["name"], $rows[$minIndex]["name"]) < 0) {
+			if(strcmp($rows[$j][0], $rows[$minIndex][0]) < 0) {
 				$minIndex = $j;
 			}
 		}
@@ -54,12 +56,5 @@
 		$rows[$minIndex] = $temp;
 	}
 
-	echo	"<br/>Sorted<br>";
-	echo "<table><tr><th>Name</th><th>USN</th><th>Branch</th><th>Semester</th></tr>";
-	foreach($rows as $row) {
-		echo "<tr><td>$row[0]</td><td>$row[1]</td><td>$row[2]</td><td>$row[3]</td></tr>";
-	}
-	echo "</table>";
-
-	$sql = null;
+	printTable("Sorted", $rows);
 ?>
