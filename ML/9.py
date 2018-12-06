@@ -15,18 +15,15 @@ trainDataset, trainTarget = np.array(
 testDataset, testTarget = np.array(
     dataset[trainLen:, :-1], dtype='float'), dataset[trainLen:, -1]
 
-predicted = []
 k = 5
-for row in testDataset:
+correct = 0
+for row, target in zip(testDataset, testTarget):
     eds = [np.sum((row - x) ** 2) for x in trainDataset]
     kNearest = np.array(sorted(zip(eds, trainTarget))[:k])[:, -1]
-    labelFreq = Counter(kNearest)
-    predicted.append(labelFreq.most_common(n=1)[0][0])
+    predicted = Counter(kNearest).most_common()[0][0]
 
-correct = 0
-for i, target in enumerate(testTarget):
-    print(f'Actual: {target.ljust(15)} \t\tPredicted: {predicted[i]}')
-    if predicted[i] == target:
+    print(f'Actual: {target.ljust(15)} \t\tPredicted: {predicted}')
+    if predicted == target:
         correct += 1
 
 print(f"Accuracy : {correct/len(testTarget)}")
