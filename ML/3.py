@@ -51,10 +51,7 @@ def id3(data, labels):
     root = Node('NULL')
 
     if entropy(data) == 0:
-        if data[0, -1] == YES:
-            root.label = YES
-        else:
-            root.label = NO
+        root.label = data[0, -1]
     elif len(data[0]) == 1:
         root.label = Counter(data[:, -1]).most_common()[0][0]
     else:
