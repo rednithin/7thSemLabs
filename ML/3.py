@@ -1,11 +1,11 @@
 import numpy as np
-from math import log2
 from csv import reader
-from pprint import pprint
+from math import log2
 from collections import Counter
+from pprint import pprint
 
-YES = 'Y'
-NO = 'N'
+YES = "Y"
+NO = "N"
 
 
 class Node:
@@ -15,12 +15,12 @@ class Node:
 
 
 def entropy(data):
-    total, posititve, negative = len(
+    total, positive, negative = len(
         data), (data[:, -1] == YES).sum(), (data[:, -1] == NO).sum()
     entropy = 0
-    if posititve > 0:
-        entropy -= posititve / total * log2(posititve / total)
-    if negative > 0:
+    if positive:
+        entropy -= positive / total * log2(positive / total)
+    if negative:
         entropy -= negative / total * log2(negative / total)
     return entropy
 
@@ -36,46 +36,45 @@ def gain(s, data, column):
 
 def bestAttribute(data):
     s = entropy(data)
-    maxCol = -1
-    maxGain = -float('inf')
-
+    bestGain = -float('inf')
+    bestColumn = -1
     for column in range(len(data[0]) - 1):
         g = gain(s, data, column)
-        if g > maxGain:
-            maxGain = g
-            maxCol = column
+        if g > bestGain:
+            bestGain = g
+            bestColumn = column
 
-    return maxCol
+    return bestColumn
 
 
 def id3(data, labels):
-    root = Node("NULL")
+    root = Node('NULL')
 
-    if (entropy(data) == 0):
+    if entropy(data) == 0:
         if data[0, -1] == YES:
-            root.label = "Yes"
+            root.label = YES
         else:
-            root.label = "No"
+            root.label = NO
     elif len(data[0]) == 1:
-        root.label = Counter(data[:, -1]).most_common(n=1)[0]
+        root.label = Counter(data[:, -1]).most_common()[0][0]
     else:
         column = bestAttribute(data)
         root.label = labels[column]
         values = set(data[:, column])
 
         for value in values:
-            nData = np.delete(data[data[:, column] == value], column, axis=1)
+            nData = np.delete(
+                data[data[:, column] == value], column, axis=1)
             nLabels = np.delete(labels, column)
             root.branches[value] = id3(nData, nLabels)
     return root
 
 
 def getRules(root, rule, rules):
-
     if not root.branches:
-        rules.append(rule[:-2] + '=> ' + root.label)
-    for i in root.branches:
-        getRules(root.branches[i], rule + root.label + '=' + i + " ^ ", rules)
+        rules.append(rule[:-2] + "=> " + root.label)
+    for value, nRoot in root.branches.items():
+        getRules(nRoot, rule + root.label + "=" + value + " ^ ", rules)
 
 
 def predict(tree, tup):
@@ -98,6 +97,6 @@ pprint(sorted(rules))
 
 tup = {}
 for label in labels[:-1]:
-    tup[label] = input(label + " : ")
+    tup[label] = input(label + ": ")
 
-pprint(predict(tree, tup))
+print(predict(tree, tup))
