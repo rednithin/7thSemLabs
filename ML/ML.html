@@ -13214,8 +13214,7 @@ div#notebook {
                     <span class="n">candidates</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">specific_hypothesis</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">newHypothesis</span> <span class="o">+=</span> <span class="n">candidates</span>
     <span class="n">generic_hypothesis</span> <span class="o">+=</span> <span class="n">newHypothesis</span>
-    <span class="n">generic_hypothesis</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-        <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">classify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;No&#39;</span> <span class="k">else</span> <span class="kc">False</span><span class="p">,</span> <span class="n">generic_hypothesis</span><span class="p">))</span>
+    <span class="n">generic_hypothesis</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">generic_hypothesis</span> <span class="k">if</span> <span class="n">classify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;No&#39;</span><span class="p">]</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">specific_hypothesis</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">generic_hypothesis</span><span class="p">)</span>
@@ -13258,13 +13257,12 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">log2</span>
 <span class="kn">from</span> <span class="nn">csv</span> <span class="k">import</span> <span class="n">reader</span>
-<span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">log2</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
 
-<span class="n">YES</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span>
-<span class="n">NO</span> <span class="o">=</span> <span class="s1">&#39;N&#39;</span>
+<span class="n">YES</span><span class="p">,</span> <span class="n">NO</span> <span class="o">=</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span>
 
 
 <span class="k">class</span> <span class="nc">Node</span><span class="p">:</span>
@@ -13274,12 +13272,12 @@ div#notebook {
 
 
 <span class="k">def</span> <span class="nf">entropy</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="n">total</span><span class="p">,</span> <span class="n">posititve</span><span class="p">,</span> <span class="n">negative</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
+    <span class="n">total</span><span class="p">,</span> <span class="n">positive</span><span class="p">,</span> <span class="n">negative</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
         <span class="n">data</span><span class="p">),</span> <span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">YES</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">NO</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="n">entropy</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="n">posititve</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">entropy</span> <span class="o">-=</span> <span class="n">posititve</span> <span class="o">/</span> <span class="n">total</span> <span class="o">*</span> <span class="n">log2</span><span class="p">(</span><span class="n">posititve</span> <span class="o">/</span> <span class="n">total</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">negative</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">positive</span><span class="p">:</span>
+        <span class="n">entropy</span> <span class="o">-=</span> <span class="n">positive</span> <span class="o">/</span> <span class="n">total</span> <span class="o">*</span> <span class="n">log2</span><span class="p">(</span><span class="n">positive</span> <span class="o">/</span> <span class="n">total</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">negative</span><span class="p">:</span>
         <span class="n">entropy</span> <span class="o">-=</span> <span class="n">negative</span> <span class="o">/</span> <span class="n">total</span> <span class="o">*</span> <span class="n">log2</span><span class="p">(</span><span class="n">negative</span> <span class="o">/</span> <span class="n">total</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">entropy</span>
 
@@ -13295,52 +13293,38 @@ div#notebook {
 
 <span class="k">def</span> <span class="nf">bestAttribute</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">entropy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">maxCol</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-    <span class="n">maxGain</span> <span class="o">=</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="n">gain</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">g</span> <span class="o">&gt;</span> <span class="n">maxGain</span><span class="p">:</span>
-            <span class="n">maxGain</span> <span class="o">=</span> <span class="n">g</span>
-            <span class="n">maxCol</span> <span class="o">=</span> <span class="n">column</span>
-
-    <span class="k">return</span> <span class="n">maxCol</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">gain</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">id3</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
-    <span class="n">root</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="s2">&quot;NULL&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">entropy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">YES</span><span class="p">:</span>
-            <span class="n">root</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Yes&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">root</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;No&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="s1">&#39;Null&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">entropy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">root</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">most_common</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">column</span> <span class="o">=</span> <span class="n">bestAttribute</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="n">root</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
         <span class="n">values</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="n">column</span><span class="p">])</span>
-
         <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
-            <span class="n">nData</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[:,</span> <span class="n">column</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">],</span> <span class="n">column</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">nData</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[:,</span> <span class="n">column</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">],</span> <span class="n">column</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">nLabels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
             <span class="n">root</span><span class="o">.</span><span class="n">branches</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">id3</span><span class="p">(</span><span class="n">nData</span><span class="p">,</span> <span class="n">nLabels</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">root</span>
 
 
 <span class="k">def</span> <span class="nf">getRules</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
-
     <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="o">.</span><span class="n">branches</span><span class="p">:</span>
-        <span class="n">rules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;=&gt; &#39;</span> <span class="o">+</span> <span class="n">root</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">branches</span><span class="p">:</span>
-        <span class="n">getRules</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">branches</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">rule</span> <span class="o">+</span> <span class="n">root</span><span class="o">.</span><span class="n">label</span> <span class="o">+</span> <span class="s1">&#39;=&#39;</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="s2">&quot; ^ &quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
+        <span class="n">rules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;=&gt; &quot;</span> <span class="o">+</span> <span class="n">root</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">nRoot</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">branches</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">getRules</span><span class="p">(</span><span class="n">nRoot</span><span class="p">,</span> <span class="n">rule</span> <span class="o">+</span> <span class="n">root</span><span class="o">.</span><span class="n">label</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">+</span> <span class="n">value</span> <span class="o">+</span> <span class="s2">&quot; ^ &quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">tup</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">tree</span><span class="o">.</span><span class="n">branches</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">tree</span><span class="o">.</span><span class="n">label</span>
-
     <span class="k">return</span> <span class="n">predict</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">branches</span><span class="p">[</span><span class="n">tup</span><span class="p">[</span><span class="n">tree</span><span class="o">.</span><span class="n">label</span><span class="p">]],</span> <span class="n">tup</span><span class="p">)</span>
 
 
@@ -13349,7 +13333,6 @@ div#notebook {
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;3-dataset.csv&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">reader</span><span class="p">(</span><span class="n">f</span><span class="p">)))</span>
 
-
 <span class="n">tree</span> <span class="o">=</span> <span class="n">id3</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 <span class="n">rules</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">getRules</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
@@ -13357,9 +13340,9 @@ div#notebook {
 
 <span class="n">tup</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-    <span class="n">tup</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="n">label</span> <span class="o">+</span> <span class="s2">&quot; : &quot;</span><span class="p">)</span>
+    <span class="n">tup</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="n">label</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span><span class="p">)</span>
 
-<span class="n">pprint</span><span class="p">(</span><span class="n">predict</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">tup</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">predict</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">tup</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13376,16 +13359,16 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[&#39;Outlook=Overcast =&gt; Yes&#39;,
- &#39;Outlook=Rain ^ Wind=F =&gt; Yes&#39;,
- &#39;Outlook=Rain ^ Wind=T =&gt; No&#39;,
- &#39;Outlook=Sunny ^ Humidity=High =&gt; No&#39;,
- &#39;Outlook=Sunny ^ Humidity=Normal =&gt; Yes&#39;]
-Outlook : Overcast
-Temperature : 
-Humidity : 
-Wind : 
-&#39;Yes&#39;
+<pre>[&#39;Outlook=Overcast =&gt; Y&#39;,
+ &#39;Outlook=Rain ^ Wind=F =&gt; Y&#39;,
+ &#39;Outlook=Rain ^ Wind=T =&gt; N&#39;,
+ &#39;Outlook=Sunny ^ Humidity=High =&gt; N&#39;,
+ &#39;Outlook=Sunny ^ Humidity=Normal =&gt; Y&#39;]
+Outlook: Overcast
+Temperature: 
+Humidity: 
+Wind: 
+Y
 </pre>
 </div>
 </div>
@@ -13464,6 +13447,8 @@ Wind :
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Final Weights W1 and W2&#39;</span><span class="p">)</span>
 <span class="n">pprint</span><span class="p">(</span><span class="n">W1</span><span class="p">)</span>
 <span class="n">pprint</span><span class="p">(</span><span class="n">W2</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13489,6 +13474,10 @@ array([[ 1.91612562, -2.56298013],
        [ 2.66954077,  0.08924304],
        [-0.68921909,  1.45600405]])
 array([[ 6.29558109, -1.526356  , -1.12090469]])
+array([[-1.70315673],
+       [-0.42983793],
+       [ 0.11530049]])
+array([[-0.88251241]])
 </pre>
 </div>
 </div>
@@ -13689,31 +13678,36 @@ Confusion Matrix :
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="k">import</span> <span class="n">Dirichlet</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">MultiMixture</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">csv</span> <span class="k">import</span> <span class="n">reader</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">enum</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;SSC&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span>
-        <span class="s1">&#39;Athlete&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Active&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Moderate&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Sedetary&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}]</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;7-dataset.csv&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">reader</span><span class="p">(</span><span class="n">f</span><span class="p">)))</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">enum</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;7-dataset.csv&#39;</span><span class="p">))])</span>
+<span class="n">enum</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">column</span><span class="p">))</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
 
-<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">enum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+                     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">])</span>
 
+<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 <span class="n">categoricals</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">enum</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">enum</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">dirichlet</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">enum</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
     <span class="n">categoricals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Categorical</span><span class="p">(</span><span class="n">dirichlet</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,)))</span>
-    <span class="n">categoricals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+    <span class="n">categoricals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">dataset</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
 
-<span class="n">target</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">plates</span><span class="o">=</span><span class="nb">tuple</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">enum</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">MultiMixture</span><span class="p">(</span><span class="n">categoricals</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">model</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">dataset</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">target</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
-<span class="n">tup</span> <span class="o">=</span> <span class="p">[</span><span class="n">enum</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Tuple: &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))]</span>
 
-<span class="n">result</span> <span class="o">=</span> <span class="n">MultiMixture</span><span class="p">(</span><span class="n">tup</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">tup</span> <span class="o">=</span> <span class="p">[</span><span class="n">enum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+       <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Tuple : &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">MultiMixture</span><span class="p">(</span><span class="n">tup</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()[</span>
+    <span class="mi">0</span><span class="p">][</span><span class="n">enum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
 
@@ -13743,7 +13737,7 @@ Confusion Matrix :
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Tuple: SSC,M,Y,M,Sedetary,H
+<pre>Tuple : SSC,M,Y,M,Sedetary,H
 0.8175744761936437
 </pre>
 </div>
@@ -13863,7 +13857,7 @@ GMM 0.5009470349898782
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -13883,18 +13877,15 @@ GMM 0.5009470349898782
 <span class="n">testDataset</span><span class="p">,</span> <span class="n">testTarget</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">[</span><span class="n">trainLen</span><span class="p">:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">),</span> <span class="n">dataset</span><span class="p">[</span><span class="n">trainLen</span><span class="p">:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-<span class="n">predicted</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">k</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">testDataset</span><span class="p">:</span>
+<span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">testDataset</span><span class="p">,</span> <span class="n">testTarget</span><span class="p">):</span>
     <span class="n">eds</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">row</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">trainDataset</span><span class="p">]</span>
     <span class="n">kNearest</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">eds</span><span class="p">,</span> <span class="n">trainTarget</span><span class="p">))[:</span><span class="n">k</span><span class="p">])[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">labelFreq</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">kNearest</span><span class="p">)</span>
-    <span class="n">predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labelFreq</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">predicted</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">kNearest</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
-<span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">testTarget</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Actual: {target.ljust(15)} </span><span class="se">\t\t</span><span class="s1">Predicted: </span><span class="si">{predicted[i]}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">predicted</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Actual: {target.ljust(15)} </span><span class="se">\t\t</span><span class="s1">Predicted: </span><span class="si">{predicted}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">predicted</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
         <span class="n">correct</span> <span class="o">+=</span> <span class="mi">1</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Accuracy : {correct/len(testTarget)}&quot;</span><span class="p">)</span>
@@ -14007,7 +13998,7 @@ Accuracy : 0.9333333333333333
 <span class="n">f</span> <span class="o">=</span> <span class="mf">0.25</span>
 <span class="n">yest</span> <span class="o">=</span> <span class="n">lowess</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
-<span class="sd">&#39;&#39;&#39;-----------------------------------------&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;------------ALTERNATE--------------&#39;&#39;&#39;</span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">200</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">pi</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>

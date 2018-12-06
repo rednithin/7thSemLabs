@@ -32,8 +32,7 @@ for row in negative_dataset:
                     candidates[i][i] = specific_hypothesis[i]
             newHypothesis += candidates
     generic_hypothesis += newHypothesis
-    generic_hypothesis = list(
-        filter(lambda x: True if classify(x, row) == 'No' else False, generic_hypothesis))
+    generic_hypothesis = [x for x in generic_hypothesis if classify(x, row) == 'No']
 
 print(specific_hypothesis)
 print(generic_hypothesis)
