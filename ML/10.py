@@ -1,5 +1,5 @@
 from sklearn.neighbors import KNeighborsRegressor
-import pylab as pl
+import matplotlib.pyplot as plt
 from math import pi, ceil
 import numpy as np
 
@@ -50,9 +50,8 @@ neigh.fit(x.reshape(-1, 1), y.reshape(-1, 1))
 newY = neigh.predict(x.reshape(-1, 1))[50:150]
 x, y = x[50:150], y[50:150]
 
-pl.clf()
-pl.plot(x, y, label='Noisy')
-pl.plot(x, yest, label='Lowess')
-pl.plot(x, newY, label='KNN Scikit')
-pl.legend(loc='upper right')
-pl.show()
+plt.plot(x, y, label='Noisy')
+plt.plot(x, yest, label='Lowess')
+plt.plot(x, newY, label='KNN Scikit')
+plt.legend(loc='upper right')
+plt.show()
