@@ -41,16 +41,18 @@ f = 0.25
 yest = lowess(x, y, f=f, iter=3)
 
 '''-----------------------------------------'''
-n = 200
-x = np.linspace(-pi, 3 * pi, n)
-y = np.sin(x) + 0.3 * np.random.randn(n)
+n = 100
+x = np.linspace(0, 2 * pi, n)
+y = np.sin(x) + 0.2 * np.random.randn(n)
+yActual = y[:]
 
-neigh = KNeighborsRegressor(n_neighbors=30)
-neigh.fit(x.reshape(-1, 1), y.reshape(-1, 1))
-newY = neigh.predict(x.reshape(-1, 1))[50:150]
-x, y = x[50:150], y[50:150]
+for _ in range(15):
+    neigh = KNeighborsRegressor(n_neighbors=5)
+    neigh.fit(x.reshape(-1, 1), y.reshape(-1, 1))
+    newY = neigh.predict(x.reshape(-1, 1))
+    y = newY
 
-plt.plot(x, y, label='Noisy')
+plt.plot(x, yActual, label='Noisy')
 plt.plot(x, yest, label='Lowess')
 plt.plot(x, newY, label='KNN Scikit')
 plt.legend(loc='upper right')
